@@ -11,10 +11,8 @@
 #define REVERSE_MS 1000
 #define NEUTRAL_MS 1500
 
-
 //Declaring which joystick we are using
 ROJoystick usb1(1);
-
 
 Servo left;
 Servo right;
@@ -25,11 +23,15 @@ int d = 250;
 //IP Address of the Arduino
 IPAddress ip ( 10, 5, 4, 50);     //<=== Make your own IP Address
 
+// sensors
+int lightPin = A0;
+int tempPin = A1;
+
+
 void setup() {
 
   right.attach(7);
   left.attach(6);
-
 
   //This function makes sure the speed controller and the Arduino understand each other.
   calibrate();
@@ -58,8 +60,7 @@ void enabled() {
   //The value becomes our wheel speeds
   left.writeMicroseconds(spdL);
   right.writeMicroseconds(spdR);
-
- 
+  
 }
 
 
@@ -71,21 +72,24 @@ void disabled() {
 
 void timedtasks() {
   //Publishing the values of the analog sticks to the RobotOpenDS
-    RODashboard.publish("usb1.leftY()", usb1.leftY());
-    RODashboard.publish("usb1.leftX()", usb1.leftX());
-    RODashboard.publish("usb1.rightY()", usb1.rightY());
-    RODashboard.publish("usb1.rightX()", usb1.rightX());
-  
-    RODashboard.publish("btnLShoulder()", usb1.btnLShoulder());
-    RODashboard.publish("lTrigger()", usb1.lTrigger());
-  
-    RODashboard.publish("btnRShoulder()", usb1.btnRShoulder());
-    RODashboard.publish("rTrigger()", usb1.rTrigger());
-    RODashboard.publish("btnA()", usb1.btnA());
-    RODashboard.publish("btnB()", usb1.btnB());
+  RODashboard.publish("usb1.leftY()", usb1.leftY());
+  RODashboard.publish("usb1.leftX()", usb1.leftX());
+  RODashboard.publish("usb1.rightY()", usb1.rightY());
+  RODashboard.publish("usb1.rightX()", usb1.rightX());
 
-  RODashboard.publish("light", analogRead(A0));
+  RODashboard.publish("btnLShoulder()", usb1.btnLShoulder());
+  RODashboard.publish("lTrigger()", usb1.lTrigger());
+
+  RODashboard.publish("btnRShoulder()", usb1.btnRShoulder());
+  RODashboard.publish("rTrigger()", usb1.rTrigger());
+  RODashboard.publish("btnA()", usb1.btnA());
+  RODashboard.publish("btnB()", usb1.btnB());
+
+  // sensors
+  RODashboard.publish("light", analogRead(lightPin));
   RODashboard.publish("temp", getTemp());
+
+  // uptime
   RODashboard.publish("Uptime Seconds", ROStatus.uptimeSeconds());
 }
 
@@ -128,14 +132,14 @@ void loop() {
 }
 
 float getTemp() {
- int RawADC = analogRead(A1);
- float Temp;
- Temp = log(10000.0*((1024.0/RawADC-1))); 
-//         =log(10000.0/(1024.0/RawADC-1)) // for pull-up configuration
- Temp = 1 / (0.001129148 + (0.000234125 + (0.0000000876741 * Temp * Temp ))* Temp );
- Temp = Temp - 273.15;            // Convert Kelvin to Celcius
- Temp = (Temp * 9.0)/ 5.0 + 32.0; // Convert Celcius to Fahrenheit
- return Temp;
+  int RawADC = analogRead(tempPin);
+  float Temp;
+  Temp = log(10000.0 * ((1024.0 / RawADC - 1)));
+  //         =log(10000.0/(1024.0/RawADC-1)) // for pull-up configuration
+  Temp = 1 / (0.001129148 + (0.000234125 + (0.0000000876741 * Temp * Temp )) * Temp );
+  Temp = Temp - 273.15;            // Convert Kelvin to Celcius
+  Temp = (Temp * 9.0) / 5.0 + 32.0; // Convert Celcius to Fahrenheit
+  return Temp;
 }
 
 
