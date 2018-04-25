@@ -21,16 +21,15 @@ void draw() {
 
 void keyPressed() {
   if (key == 'a') {
-    robotInstance.setAnalogLeftY(100);
-    robotInstance.setAnalogRightX(100);
-    robotInstance.setAnalogRightY(100);
+    robotInstance.setAnalogLeftY(200);
+    robotInstance.setAnalogRightY(200);
   }
 }
 
 void keyReleased() {
   if (key == 'a') {
-    robotInstance.setAnalogLeftY(127);
     robotInstance.setAnalogRightY(127);
+    robotInstance.setAnalogLeftY(127);
   }
 }
 
