@@ -18,9 +18,6 @@ ROJoystick usb1(1);
 
 Servo left;
 Servo right;
-Servo actuator1;
-Servo actuator2;
-Servo actuator3;
 
 //Delay time for calibration
 int d = 250;
@@ -32,13 +29,10 @@ void setup() {
 
   right.attach(7);
   left.attach(6);
-  //  actuator1.attach(3);
-  //  actuator2.attach(5);
-  //  actuator3.attach(4);
 
 
   //This function makes sure the speed controller and the Arduino understand each other.
-  //calibrate();
+  calibrate();
 
   //Communicates with the RobotOpen Driver Station
   RobotOpen.setIP(ip);
@@ -60,63 +54,19 @@ void enabled() {
   int spdL = map (valL, 0, 255, 1000, 2000);
   int spdR = map (valR, 0, 255, 1000, 2000);
 
-  if ((valR > 125 && valR < 190) || (valR < 125 && valR > 62)) {
-    int spdL = map (valL, 0, 255, 1400, 1600);
-    int spdR = map (valR, 0, 255, 1400, 1600);
-  }
-
-
 
   //The value becomes our wheel speeds
   left.writeMicroseconds(spdL);
   right.writeMicroseconds(spdR);
 
-  int actOFF = 1500;
-  int actUP = 2000;
-  int actDOWN = 1000;
-
-  if (usb1.btnLShoulder()) {
-    actuator1.writeMicroseconds(actUP);
-  }
-  else if (usb1.lTrigger()) {
-    actuator1.writeMicroseconds(actDOWN);
-  }
-  else {
-    actuator1.writeMicroseconds(actOFF);
-  }
-
-  if (usb1.btnRShoulder()) {
-    actuator2.writeMicroseconds(actUP);
-  }
-  else if (usb1.rTrigger()) {
-    actuator2.writeMicroseconds(actDOWN);
-  }
-  else {
-    actuator2.writeMicroseconds(actOFF);
-  }
-  if (usb1.btnB()) {
-    actuator3.writeMicroseconds(actUP);
-  }
-  else if (usb1.btnA()) {
-    actuator3.writeMicroseconds(actDOWN);
-  }
-  else {
-    actuator3.writeMicroseconds(actOFF);
-  }
+ 
 }
 
 
 void disabled() {
   // safety code
-  //  left.writeMicroseconds(NEUTRAL_MS);
-  //  leftFront.writeMicroseconds(NEUTRAL_MS);
-  //  right.writeMicroseconds(NEUTRAL_MS);
-  //  rightFront.writeMicroseconds(NEUTRAL_MS);
   left.writeMicroseconds(NEUTRAL_MS);
   right.writeMicroseconds(NEUTRAL_MS);
-  actuator1.writeMicroseconds(NEUTRAL_MS);
-  actuator2.writeMicroseconds(NEUTRAL_MS);
-  actuator3.writeMicroseconds(NEUTRAL_MS);
 }
 
 void timedtasks() {
